@@ -7,13 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA0FE33527F23C7E0012BCBC /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0FE33427F23C7E0012BCBC /* Search.swift */; };
+		AA0FE33727F245250012BCBC /* ResultsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0FE33627F245250012BCBC /* ResultsList.swift */; };
+		AA0FE33A27F2470C0012BCBC /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0FE33927F2470C0012BCBC /* Player.swift */; };
 		AA4A06CF27EF52720085B4A9 /* Music_RebornApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4A06CE27EF52720085B4A9 /* Music_RebornApp.swift */; };
 		AA4A06D127EF52720085B4A9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4A06D027EF52720085B4A9 /* ContentView.swift */; };
 		AA4A06D327EF52740085B4A9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA4A06D227EF52740085B4A9 /* Assets.xcassets */; };
 		AA4A06D627EF52740085B4A9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA4A06D527EF52740085B4A9 /* Preview Assets.xcassets */; };
+		AA4A06E027EF55B50085B4A9 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = AA4A06DF27EF55B50085B4A9 /* SDWebImageSwiftUI */; };
+		AA4A06E327EF55DA0085B4A9 /* YouTubeKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA4A06E227EF55DA0085B4A9 /* YouTubeKit */; };
+		AA4A06E627EF55F70085B4A9 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = AA4A06E527EF55F70085B4A9 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AA0FE33427F23C7E0012BCBC /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
+		AA0FE33627F245250012BCBC /* ResultsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsList.swift; sourceTree = "<group>"; };
+		AA0FE33927F2470C0012BCBC /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		AA4A06CB27EF52720085B4A9 /* Music Reborn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Music Reborn.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4A06CE27EF52720085B4A9 /* Music_RebornApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Music_RebornApp.swift; sourceTree = "<group>"; };
 		AA4A06D027EF52720085B4A9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -26,12 +35,41 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA4A06E627EF55F70085B4A9 /* Alamofire in Frameworks */,
+				AA4A06E027EF55B50085B4A9 /* SDWebImageSwiftUI in Frameworks */,
+				AA4A06E327EF55DA0085B4A9 /* YouTubeKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA0FE33227F23A7B0012BCBC /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AA0FE33327F23C720012BCBC /* API Structs */,
+				AA0FE33627F245250012BCBC /* ResultsList.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		AA0FE33327F23C720012BCBC /* API Structs */ = {
+			isa = PBXGroup;
+			children = (
+				AA0FE33427F23C7E0012BCBC /* Search.swift */,
+			);
+			path = "API Structs";
+			sourceTree = "<group>";
+		};
+		AA0FE33827F246FE0012BCBC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AA4A06D027EF52720085B4A9 /* ContentView.swift */,
+				AA0FE33927F2470C0012BCBC /* Player.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		AA4A06C227EF52720085B4A9 = {
 			isa = PBXGroup;
 			children = (
@@ -52,7 +90,8 @@
 			isa = PBXGroup;
 			children = (
 				AA4A06CE27EF52720085B4A9 /* Music_RebornApp.swift */,
-				AA4A06D027EF52720085B4A9 /* ContentView.swift */,
+				AA0FE33827F246FE0012BCBC /* Views */,
+				AA0FE33227F23A7B0012BCBC /* Utils */,
 				AA4A06D227EF52740085B4A9 /* Assets.xcassets */,
 				AA4A06D427EF52740085B4A9 /* Preview Content */,
 			);
@@ -83,6 +122,11 @@
 			dependencies = (
 			);
 			name = "Music Reborn";
+			packageProductDependencies = (
+				AA4A06DF27EF55B50085B4A9 /* SDWebImageSwiftUI */,
+				AA4A06E227EF55DA0085B4A9 /* YouTubeKit */,
+				AA4A06E527EF55F70085B4A9 /* Alamofire */,
+			);
 			productName = "Music Reborn";
 			productReference = AA4A06CB27EF52720085B4A9 /* Music Reborn.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +155,11 @@
 				Base,
 			);
 			mainGroup = AA4A06C227EF52720085B4A9;
+			packageReferences = (
+				AA4A06DE27EF55B50085B4A9 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				AA4A06E127EF55DA0085B4A9 /* XCRemoteSwiftPackageReference "YouTubeKit" */,
+				AA4A06E427EF55F70085B4A9 /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			productRefGroup = AA4A06CC27EF52720085B4A9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -138,6 +187,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA4A06D127EF52720085B4A9 /* ContentView.swift in Sources */,
+				AA0FE33527F23C7E0012BCBC /* Search.swift in Sources */,
+				AA0FE33727F245250012BCBC /* ResultsList.swift in Sources */,
+				AA0FE33A27F2470C0012BCBC /* Player.swift in Sources */,
 				AA4A06CF27EF52720085B4A9 /* Music_RebornApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -339,6 +391,51 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AA4A06DE27EF55B50085B4A9 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+		AA4A06E127EF55DA0085B4A9 /* XCRemoteSwiftPackageReference "YouTubeKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "http://github.com/alexeichhorn/YouTubeKit";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		AA4A06E427EF55F70085B4A9 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA4A06DF27EF55B50085B4A9 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA4A06DE27EF55B50085B4A9 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+		AA4A06E227EF55DA0085B4A9 /* YouTubeKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA4A06E127EF55DA0085B4A9 /* XCRemoteSwiftPackageReference "YouTubeKit" */;
+			productName = YouTubeKit;
+		};
+		AA4A06E527EF55F70085B4A9 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA4A06E427EF55F70085B4A9 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AA4A06C327EF52720085B4A9 /* Project object */;
 }
