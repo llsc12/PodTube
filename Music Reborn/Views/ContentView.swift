@@ -8,7 +8,7 @@
 import SwiftUI
 import Alamofire
 import SDWebImageSwiftUI
-import YouTubeKit
+import AVFAudio
 
 struct ContentView: View {
     @State private var term: String = ""
@@ -24,6 +24,10 @@ struct ContentView: View {
                         "Search YouTube",
                         text: $term
                     )
+                    .onAppear(perform: {
+                        try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
+                        try? AVAudioSession.sharedInstance().setActive(false)
+                    })
                     .textFieldStyle(.roundedBorder)
                     .cornerRadius(3)
                     .onSubmit {
@@ -38,17 +42,14 @@ struct ContentView: View {
                                 let json = try? JSONDecoder().decode(Videos.self, from: data)
                                 if json == nil {return}
                                 for vid in json! {
-                                    Task{
-                                        searchResults.append(
-                                            Result(
-                                                title: vid.title,
-                                                vidId: vid.videoID,
-                                                thumb: URL(string: vid.videoThumbnails[0].url)!,
-                                                author: vid.author,
-                                                src: URL(string: "egg")
-                                            )
+                                    searchResults.append(
+                                        Result(
+                                            title: vid.title,
+                                            vidId: vid.videoID,
+                                            thumb: URL(string: vid.videoThumbnails[0].url)!,
+                                            author: vid.author
                                         )
-                                    }
+                                    )
                                 }
                             case .failure(_):
                                 showSpinner = false
@@ -70,35 +71,22 @@ struct ContentView: View {
                 if !searchResults.isEmpty {
                     List(searchResults) { result in
                         NavigationLink(
-                            destination: PlayerView(thumb: result.thumb, vidId: result.vidId, title: result.title, author: result.author),
-                            tag: 1,
-                            selection: $selection
+                            destination: PlayerView(thumb: result.thumb, vidId: result.vidId, title: result.title, author: result.author)
                         ) {
-                            Button(action: {
-                                UserDefaults.standard.set(result.vidId, forKey: "id")
-                                DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                                    self.selection = 1
-                                }
-                            }) {
-                                HStack {
-                                    WebImage(url: result.thumb)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .cornerRadius(3)
-                                    VStack {
-                                        Text("\(result.title)")
-                                            .lineLimit(5)
-                                        Text("\(result.author)")
-                                            .lineLimit(3)
-                                            .font(.footnote)
-                                            .foregroundColor(.gray)
-                                    }
+                            HStack {
+                                WebImage(url: result.thumb)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .cornerRadius(3)
+                                VStack {
+                                    Text("\(result.title)")
+                                        .lineLimit(5)
+                                    Text("\(result.author)")
+                                        .lineLimit(3)
+                                        .font(.footnote)
+                                        .foregroundColor(.gray)
                                 }
                             }
-                            .accentColor(Color.black)
-                            .padding()
-                            .cornerRadius(4.0)
-                            .padding(Edge.Set.vertical, 20)
                         }
                     }
                 } else {

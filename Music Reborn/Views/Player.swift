@@ -12,12 +12,12 @@ import AVKit
 import AVFoundation
 
 struct PlayerView: View {
-    @State var source: AVPlayer
     @State var thumb: URL
     @State var vidId: String
     @State var title: String
     @State var author: String
-    
+    @State var player = AVPlayer()
+
     @State var isPlaying: Bool = false
     
     var body: some View {
@@ -31,11 +31,11 @@ struct PlayerView: View {
 
             VStack {
                 Text(title)
-                    .font(.largeTitle)
+                    .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                     .shadow(color: .black, radius: 5, x: 0, y: 0)
-                    .frame(width: 350, alignment: .center)
+                    .frame(width: UIScreen.main.bounds.width, alignment: .center)
                     .multilineTextAlignment(.center)
                     .lineLimit(3)
                 
@@ -44,32 +44,47 @@ struct PlayerView: View {
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                     .shadow(color: .black, radius: 5, x: 0, y: 0)
-                    .frame(width: 350, alignment: .center)
+                    .frame(width: UIScreen.main.bounds.width, alignment: .center)
 
                 Spacer()
                 WebImage(url: thumb)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 350, alignment: .center)
+                    .frame(width: UIScreen.main.bounds.width - 40, alignment: .center)
                     .cornerRadius(15, antialiased: true)
                     .shadow(color: .black, radius: 10, x: 0, y: 0)
                 Spacer()
                 Spacer()
-                HStack(alignment: .center) {
-                    Button {
-                        isPlaying.toggle()
-                        switch isPlaying {
-                        case true:
-                            viewModel.player.play()
-                        case false:
-                            viewModel.player.pause()
+                VStack {
+                    Slider(value: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Value@*/.constant(10)/*@END_MENU_TOKEN@*/)
+                    HStack(alignment: .center) {
+                        Button {
+                            isPlaying.toggle()
+                            
+                            switch isPlaying {
+                            case true:
+                                player.play()
+                            case false:
+                                player.pause()
+                            }
+                        } label: {
+                            Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .foregroundColor(.white)
+                                .frame(width: 75, alignment: .center)
                         }
-                    } label: {
-                        Image(systemName: isPlaying ? "play.circle.fill" : "pause.circle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundColor(.white)
-                            .frame(width: 75, alignment: .center)
+                        .onAppear {
+                            player = AVPlayer(url: URL(string: "https://invidious.osi.kr/latest_version?id=\(vidId)&itag=140")!)
+                            player.play()
+                            isPlaying = true
+                            try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
+                            try? AVAudioSession.sharedInstance().setActive(true)
+                        }
+                        .onDisappear {
+                            player.pause()
+                            player = AVPlayer()
+                        }
                     }
                 }
                 Spacer()
