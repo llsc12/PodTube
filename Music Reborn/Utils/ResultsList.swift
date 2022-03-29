@@ -12,4 +12,6 @@ struct Result: Identifiable {
     var title: String
     var vidId: String
     var thumb: URL
+    var author: String
+    var src: URL
 }

@@ -23,7 +23,8 @@
 		AA0FE33427F23C7E0012BCBC /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		AA0FE33627F245250012BCBC /* ResultsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsList.swift; sourceTree = "<group>"; };
 		AA0FE33927F2470C0012BCBC /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
-		AA4A06CB27EF52720085B4A9 /* Music Reborn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Music Reborn.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0FE33B27F24EF60012BCBC /* Music-Reborn-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Music-Reborn-Info.plist"; sourceTree = SOURCE_ROOT; };
+		AA4A06CB27EF52720085B4A9 /* PodTube.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PodTube.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4A06CE27EF52720085B4A9 /* Music_RebornApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Music_RebornApp.swift; sourceTree = "<group>"; };
 		AA4A06D027EF52720085B4A9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AA4A06D227EF52740085B4A9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -81,7 +82,7 @@
 		AA4A06CC27EF52720085B4A9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AA4A06CB27EF52720085B4A9 /* Music Reborn.app */,
+				AA4A06CB27EF52720085B4A9 /* PodTube.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -89,6 +90,7 @@
 		AA4A06CD27EF52720085B4A9 /* Music Reborn */ = {
 			isa = PBXGroup;
 			children = (
+				AA0FE33B27F24EF60012BCBC /* Music-Reborn-Info.plist */,
 				AA4A06CE27EF52720085B4A9 /* Music_RebornApp.swift */,
 				AA0FE33827F246FE0012BCBC /* Views */,
 				AA0FE33227F23A7B0012BCBC /* Utils */,
@@ -109,9 +111,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AA4A06CA27EF52720085B4A9 /* Music Reborn */ = {
+		AA4A06CA27EF52720085B4A9 /* PodTube */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA4A06D927EF52740085B4A9 /* Build configuration list for PBXNativeTarget "Music Reborn" */;
+			buildConfigurationList = AA4A06D927EF52740085B4A9 /* Build configuration list for PBXNativeTarget "PodTube" */;
 			buildPhases = (
 				AA4A06C727EF52720085B4A9 /* Sources */,
 				AA4A06C827EF52720085B4A9 /* Frameworks */,
@@ -121,14 +123,14 @@
 			);
 			dependencies = (
 			);
-			name = "Music Reborn";
+			name = PodTube;
 			packageProductDependencies = (
 				AA4A06DF27EF55B50085B4A9 /* SDWebImageSwiftUI */,
 				AA4A06E227EF55DA0085B4A9 /* YouTubeKit */,
 				AA4A06E527EF55F70085B4A9 /* Alamofire */,
 			);
 			productName = "Music Reborn";
-			productReference = AA4A06CB27EF52720085B4A9 /* Music Reborn.app */;
+			productReference = AA4A06CB27EF52720085B4A9 /* PodTube.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -146,7 +148,7 @@
 					};
 				};
 			};
-			buildConfigurationList = AA4A06C627EF52720085B4A9 /* Build configuration list for PBXProject "Music Reborn" */;
+			buildConfigurationList = AA4A06C627EF52720085B4A9 /* Build configuration list for PBXProject "PodTube" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -164,7 +166,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AA4A06CA27EF52720085B4A9 /* Music Reborn */,
+				AA4A06CA27EF52720085B4A9 /* PodTube */,
 			);
 		};
 /* End PBXProject section */
@@ -322,6 +324,7 @@
 				DEVELOPMENT_TEAM = 9Q5DU84SYV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Music-Reborn-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -351,6 +354,7 @@
 				DEVELOPMENT_TEAM = 9Q5DU84SYV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Music-Reborn-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -372,7 +376,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA4A06C627EF52720085B4A9 /* Build configuration list for PBXProject "Music Reborn" */ = {
+		AA4A06C627EF52720085B4A9 /* Build configuration list for PBXProject "PodTube" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA4A06D727EF52740085B4A9 /* Debug */,
@@ -381,7 +385,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AA4A06D927EF52740085B4A9 /* Build configuration list for PBXNativeTarget "Music Reborn" */ = {
+		AA4A06D927EF52740085B4A9 /* Build configuration list for PBXNativeTarget "PodTube" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA4A06DA27EF52740085B4A9 /* Debug */,
