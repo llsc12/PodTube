@@ -8,29 +8,42 @@
 import SwiftUI
 import SDWebImageSwiftUI
 import AVFoundation
+import AVKit
 import YouTubeKit
 
 class ViewModel: ObservableObject {
     var player = AVPlayer()
     var timeObserverToken: Any?
-    var max: Double = 0
-    var current: Double = 0
+    var max: Int = 0
+    var current: Int = 0
     var isPlaying: Bool = false
+    var label = "00:00"
+    var video = AVPlayer()
+    
     func mainpart() {
         // the thing that periodically checks what subtitle should be displayed and changes subtitletext as needed
         let interval = CMTime(seconds: 0.2, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         timeObserverToken = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [self] time in
             let seconds: Double = CMTimeGetSeconds(time)
-            current = Double(seconds)
-            max = Double((player.currentItem?.duration.seconds) ?? 0) / 2
+            current = Int(seconds.rounded())
+            max = Int("\((Double((player.currentItem?.duration.seconds) ?? 0) / 2).rounded())".components(separatedBy: ".")[0]) ?? 0
+
             if ((player.rate != 0) && (player.error == nil)) {
                 isPlaying = true
+                video.play()
             } else {
                 isPlaying = false
+                video.pause()
             }
-            if current >= max {
+            
+            if video.currentTime().seconds <= player.currentTime().seconds + 2 && video.currentTime().seconds >= player.currentTime().seconds - 2 {
+                
+            } else {
+                video.seek(to: player.currentTime())
+            }
+            if current >= max + 1 {
                 player.pause()
-                let time = CMTime(seconds: max, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+                let time = CMTime(seconds: Double(max), preferredTimescale: CMTimeScale(NSEC_PER_SEC))
                 // Update Slider UI based on time value
                 let rate = player.rate
                 // Temporarily stop while changing time
@@ -40,6 +53,8 @@ class ViewModel: ObservableObject {
                     // Play again when the changes are complete
                     self.player.rate = rate
                 }
+            } else {
+                label = "\(makeTimestamp(t: current)) / \(makeTimestamp(t: max))"
             }
             objectWillChange.send()
         }
@@ -47,7 +62,7 @@ class ViewModel: ObservableObject {
 }
 
 struct PlayerView: View {
-    var src = ""
+    @State var showingVideo = false
     @State var thumb: URL
     @State var vidId: String
     @State var title: String
@@ -83,15 +98,34 @@ struct PlayerView: View {
                     .frame(width: UIScreen.main.bounds.width, alignment: .center)
 
                 Spacer()
-                WebImage(url: thumb)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: UIScreen.main.bounds.width - 40, alignment: .center)
-                    .cornerRadius(15, antialiased: true)
-                    .shadow(color: .black, radius: 10, x: 0, y: 0)
-                    .onTapGesture {
-                        UIPasteboard.general.string = "https://youtu.be/\(vidId)"
-                    }
+                if !showingVideo {
+                    WebImage(url: thumb)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: UIScreen.main.bounds.width - 40, alignment: .center)
+                        .cornerRadius(15, antialiased: true)
+                        .shadow(color: .black, radius: 10, x: 0, y: 0)
+                        .onTapGesture {
+                            UIPasteboard.general.string = "https://youtu.be/\(vidId)"
+                        }
+                        .onLongPressGesture(minimumDuration: 0.5, maximumDistance: 0) {
+                            showingVideo.toggle()
+                        }
+
+                } else {
+                    VideoPlayer(player: vm.video)
+                        .scaledToFit()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: UIScreen.main.bounds.width - 40, alignment: .center)
+                        .cornerRadius(15, antialiased: true)
+                        .shadow(color: .black, radius: 10, x: 0, y: 0)
+                        .onTapGesture {
+                            UIPasteboard.general.string = "https://youtu.be/\(vidId)"
+                        }
+                        .onLongPressGesture(minimumDuration: 0.5, maximumDistance: 0) {
+                            showingVideo.toggle()
+                        }
+                }
                 Spacer()
                 
                 if vm.max == 0 {
@@ -99,8 +133,12 @@ struct PlayerView: View {
                     .frame(width: UIScreen.main.bounds.width - 50)
                     .shadow(color: .black, radius: 15, x: 0, y: 0)
                 } else {
-                    ProgressView(value: vm.current, total: vm.max) {
+                    ProgressView(value: Double(vm.current), total: Double(vm.max)) {
                         Text("")
+                    } currentValueLabel: {
+                        Text(vm.label)
+                            .foregroundColor(.white)
+                            .shadow(color: .black, radius: 10, x: 0, y: 0)
                     }
                     .frame(width: UIScreen.main.bounds.width - 50)
                     .shadow(color: .black, radius: 15, x: 0, y: 0)
@@ -162,8 +200,12 @@ struct PlayerView: View {
                                 let audioStreams = streams.filterAudioOnly()
                                 stream = audioStreams.filter { $0.subtype == "mp4" }
                                 .highestAudioBitrateStream()
-                                
                                 vm.player = AVPlayer(url: URL(string: stream.url.absoluteString)!)
+
+                                let videoStreams = streams.filterVideoOnly()
+                                stream = videoStreams.filter { $0.subtype == "mp4"}.streams(withExactResolution: 720).first
+                                vm.video = AVPlayer(url: URL(string: stream.url.absoluteString)!)
+                                
                                 vm.mainpart()
                                 vm.player.play()
                                 try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
@@ -209,10 +251,35 @@ struct PlayerView: View {
 struct Player_Previews: PreviewProvider {
     static var previews: some View {
         PlayerView(
-            thumb: URL(string: "https://vid.puffyan.us/vi/mMSBnt25tr0/maxresdefault.jpg")!,
-            vidId: "mMSBnt25tr0",
+            thumb: URL(string: "https://vid.puffyan.us/vi/bYCUt4sPlKc/maxresdefault.jpg")!,
+            vidId: "bYCUt4sPlKc",
             title: "Hyperspeed",
             author: "Eveningland - Topic"
         )
+    }
+}
+
+func makeTimestamp(t: Int) -> String {
+    let secs = t % 60
+    let mins = Int(Double(t / 60).rounded(.down))
+    let hours = Int(Double(t / 3600).rounded(.down))
+    var strSecs: String = "\(secs)"
+    var strMins: String = "\(mins)"
+    var strHours: String = "\(hours)"
+    
+    if String(secs).count == 1 {
+        strSecs = "0\(secs)"
+    }
+    if String(mins).count == 1 {
+        strMins = "0\(mins)"
+    }
+    if String(hours).count == 1 {
+        strHours = "0\(hours)"
+    }
+    
+    if hours == 0 {
+        return "\(strMins):\(strSecs)"
+    } else {
+        return "\(strHours):\(strMins):\(strSecs)"
     }
 }

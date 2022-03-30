@@ -4,7 +4,6 @@
 //
 //  Created by llsc12 on 26/03/2022.
 //
-
 import SwiftUI
 import Alamofire
 import SDWebImageSwiftUI
@@ -27,11 +26,9 @@ struct ContentView: View {
                         try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
                         try? AVAudioSession.sharedInstance().setActive(false)
                     })
-                    .textFieldStyle(.roundedBorder)
-                    .cornerRadius(3)
                     .onSubmit {
                         showSpinner = true
-                        let path = "https://vid.puffyan.us/api/v1/search?q=\(term.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")&type=video"
+                        let path = "https://invidious.osi.kr/api/v1/search?q=\(term.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")&type=video"
                         AF.request(path).responseData { res in
                             switch res.result {
                             case .success(let data):
@@ -55,17 +52,11 @@ struct ContentView: View {
                             }
                         }
                     }
+                    .textFieldStyle(.roundedBorder)
+                    .cornerRadius(0)
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
-                    .border(.secondary)
                     .padding([.top, .leading, .trailing], 15.0)
-
-                    if showSpinner {
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                            .padding(.trailing)
-                    }
-
                 }
                 if !searchResults.isEmpty {
                     List(searchResults) { result in
@@ -80,11 +71,19 @@ struct ContentView: View {
                                     .blur(radius: 30)
                                     .brightness(-0.2)
                                 HStack {
+                                    #if os(macOS)
+                                    WebImage(url: result.thumb)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .cornerRadius(3)
+                                        .frame(width: UIScreen.main.bounds.width / 30, alignment: .leading)
+                                    #else
                                     WebImage(url: result.thumb)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .cornerRadius(3)
                                         .frame(width: UIScreen.main.bounds.width / 4, alignment: .leading)
+                                    #endif
                                     VStack {
                                         Text("\(result.title)")
                                             .lineLimit(5)
@@ -102,6 +101,12 @@ struct ContentView: View {
                         }
                     }
                 } else {
+                    Spacer()
+                    if showSpinner {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .padding(.trailing)
+                    }
                     Spacer()
                 }
             }
