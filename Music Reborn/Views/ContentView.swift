@@ -14,7 +14,6 @@ struct ContentView: View {
     @State private var term: String = ""
     @State private var searchResults: Array<Result> = []
     @State private var showSpinner: Bool = false
-    @State private var selection: Int? = nil
     
     var body: some View {
         NavigationView {
@@ -73,21 +72,33 @@ struct ContentView: View {
                         NavigationLink(
                             destination: PlayerView(thumb: result.thumb, vidId: result.vidId, title: result.title, author: result.author)
                         ) {
-                            HStack {
+                            ZStack {
                                 WebImage(url: result.thumb)
                                     .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .cornerRadius(3)
-                                    .frame(width: UIScreen.main.bounds.width / 4)
-                                VStack {
-                                    Text("\(result.title)")
-                                        .lineLimit(5)
-                                    Text("\(result.author)")
-                                        .lineLimit(3)
-                                        .font(.footnote)
-                                        .foregroundColor(.gray)
+                                    .scaledToFill()
+                                    .ignoresSafeArea()
+                                    .blur(radius: 30)
+                                    .brightness(-0.2)
+                                HStack {
+                                    WebImage(url: result.thumb)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .cornerRadius(3)
+                                        .frame(width: UIScreen.main.bounds.width / 4, alignment: .leading)
+                                    VStack {
+                                        Text("\(result.title)")
+                                            .lineLimit(5)
+                                            .foregroundColor(.white)
+                                            .shadow(color: .black, radius: 2, x: 0, y: 0)
+                                        Text("\(result.author)")
+                                            .lineLimit(3)
+                                            .font(.footnote)
+                                            .foregroundColor(.gray)
+                                            .shadow(color: .black, radius: 2, x: 0, y: 0)
+                                    }
                                 }
                             }
+                            .frame(height: UIScreen.main.bounds.height / 6 ,alignment:.center)
                         }
                     }
                 } else {

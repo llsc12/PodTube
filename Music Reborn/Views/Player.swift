@@ -64,7 +64,7 @@ struct PlayerView: View {
                 .ignoresSafeArea()
                 .blur(radius: 30)
                 .frame(alignment:.center)
-                .blendMode(.darken)
+                .brightness(-0.2)
             VStack {
                 Text(title)
                     .font(.title)
@@ -96,14 +96,14 @@ struct PlayerView: View {
                 
                 if vm.max == 0 {
                     ProgressView()
-                    .frame(width: UIScreen.main.bounds.width - 20)
-                    .shadow(color: .black, radius: 10, x: 0, y: 0)
+                    .frame(width: UIScreen.main.bounds.width - 50)
+                    .shadow(color: .black, radius: 15, x: 0, y: 0)
                 } else {
                     ProgressView(value: vm.current, total: vm.max) {
                         Text("")
                     }
-                    .frame(width: UIScreen.main.bounds.width - 20)
-                    .shadow(color: .black, radius: 10, x: 0, y: 0)
+                    .frame(width: UIScreen.main.bounds.width - 50)
+                    .shadow(color: .black, radius: 15, x: 0, y: 0)
                 }
                 Spacer()
                 VStack {
@@ -209,10 +209,10 @@ struct PlayerView: View {
 struct Player_Previews: PreviewProvider {
     static var previews: some View {
         PlayerView(
-            thumb: URL(string: "https://vid.puffyan.us/vi/bYCUt4sPlKc/maxres.jpg")!,
-            vidId: "bYCUt4sPlKc",
-            title: "Ki Jor Gariban Da",
-            author: "Josh Sidhu"
+            thumb: URL(string: "https://vid.puffyan.us/vi/mMSBnt25tr0/maxresdefault.jpg")!,
+            vidId: "mMSBnt25tr0",
+            title: "Hyperspeed",
+            author: "Eveningland - Topic"
         )
     }
 }
