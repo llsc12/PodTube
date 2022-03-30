@@ -78,6 +78,7 @@ struct ContentView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .cornerRadius(3)
+                                    .frame(width: UIScreen.main.bounds.width / 4)
                                 VStack {
                                     Text("\(result.title)")
                                         .lineLimit(5)

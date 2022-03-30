@@ -7,19 +7,42 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
-import YouTubeKit
-import AVKit
 import AVFoundation
+import YouTubeKit
+
+class ViewModel: ObservableObject {
+    var player = AVPlayer()
+    var timeObserverToken: Any?
+    var max: Double = 0
+    var current: Double = 0
+    var isPlaying: Bool = false
+    func mainpart() {
+        // the thing that periodically checks what subtitle should be displayed and changes subtitletext as needed
+        let interval = CMTime(seconds: 0.2, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+        timeObserverToken = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [self] time in
+            let seconds: Double = CMTimeGetSeconds(time)
+            current = Double(seconds)
+            max = Double((player.currentItem?.duration.seconds) ?? 0)
+            if ((player.rate != 0) && (player.error == nil)) {
+                isPlaying = true
+            } else {
+                isPlaying = false
+            }
+            objectWillChange.send()
+        }
+    }
+}
 
 struct PlayerView: View {
+    var src = ""
     @State var thumb: URL
     @State var vidId: String
     @State var title: String
     @State var author: String
-    @State var player = AVPlayer()
-
-    @State var isPlaying: Bool = false
+    @StateObject var vm = ViewModel()
     
+    var timeObserverToken: Any?
+
     var body: some View {
         ZStack {
             WebImage(url: thumb)
@@ -53,37 +76,108 @@ struct PlayerView: View {
                     .frame(width: UIScreen.main.bounds.width - 40, alignment: .center)
                     .cornerRadius(15, antialiased: true)
                     .shadow(color: .black, radius: 10, x: 0, y: 0)
+                    .onTapGesture {
+                        UIPasteboard.general.string = "https://youtu.be/\(vidId)"
+                    }
                 Spacer()
+                
+                if vm.max == 0 {
+                    ProgressView()
+                    .frame(width: UIScreen.main.bounds.width - 20)
+                } else {
+                    ProgressView(value: vm.current, total: vm.max) {
+                        Text("")
+                    }
+                    .frame(width: UIScreen.main.bounds.width - 20)
+                }
                 Spacer()
                 VStack {
-                    Slider(value: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Value@*/.constant(10)/*@END_MENU_TOKEN@*/)
+
                     HStack(alignment: .center) {
                         Button {
-                            isPlaying.toggle()
-                            
-                            switch isPlaying {
-                            case true:
-                                player.play()
-                            case false:
-                                player.pause()
+                            let time = CMTime(seconds: vm.player.currentTime().seconds - 5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+                            // Update Slider UI based on time value
+                            let rate = vm.player.rate
+                            // Temporarily stop while changing time
+                            vm.player.rate = 0
+                            vm.player.seek(to: time) { completed in
+                                if !completed { return }
+                                // Play again when the changes are complete
+                                vm.player.rate = rate
                             }
+                            
+                            let generator = UIImpactFeedbackGenerator(style: .light)
+                            generator.impactOccurred()
+                            
                         } label: {
-                            Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                            Image(systemName: "gobackward.5")
+                                .resizable()
+                                .scaledToFit()
+                                .foregroundColor(.white)
+                                .frame(width: 50, alignment: .center)
+                        }
+                        Button { // play pause
+                            switch vm.isPlaying {
+                            case true:
+                                vm.player.pause()
+                            case false:
+                                vm.player.play()
+                            }
+                            
+                            let generator = UIImpactFeedbackGenerator(style: .light)
+                            generator.impactOccurred()
+                            
+                        } label: {
+                            Image(systemName: vm.isPlaying ? "pause.circle.fill" : "play.circle.fill")
                                 .resizable()
                                 .scaledToFit()
                                 .foregroundColor(.white)
                                 .frame(width: 75, alignment: .center)
                         }
+                        .padding(.horizontal, UIScreen.main.bounds.width / 10)
                         .onAppear {
-                            player = AVPlayer(url: URL(string: "https://invidious.osi.kr/latest_version?id=\(vidId)&itag=140")!)
-                            player.play()
-                            isPlaying = true
-                            try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
-                            try? AVAudioSession.sharedInstance().setActive(true)
+                            Task {
+                                let ytVideo = YouTube(videoID: vidId)
+                                let streams = try await ytVideo.streams
+                                var stream: YouTubeKit.Stream!
+                                
+                                //get the necessary stream
+                                let audioStreams = streams.filterAudioOnly()
+                                stream = audioStreams.filter { $0.subtype == "mp4" }
+                                .highestAudioBitrateStream()
+                                
+                                vm.player = AVPlayer(url: URL(string: stream.url.absoluteString)!)
+                                vm.mainpart()
+                                vm.player.play()
+                                try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
+                                try? AVAudioSession.sharedInstance().setActive(true)
+                            }
                         }
                         .onDisappear {
-                            player.pause()
-                            player = AVPlayer()
+                            vm.player.pause()
+                            vm.player = AVPlayer()
+                        }
+                        Button {
+                            let time = CMTime(seconds: vm.player.currentTime().seconds + 5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+                            // Update Slider UI based on time value
+                            let rate = vm.player.rate
+                            // Temporarily stop while changing time
+                            vm.player.rate = 0
+                            vm.player.seek(to: time) { completed in
+                                if !completed { return }
+                                // Play again when the changes are complete
+                                vm.player.rate = rate
+                            }
+                            
+                            let generator = UIImpactFeedbackGenerator(style: .light)
+                            generator.impactOccurred()
+                            
+                        } label: {
+                            Image(systemName: "goforward.5")
+                                .resizable()
+                                .scaledToFit()
+                                .foregroundColor(.white)
+                                .frame(width: 50, alignment: .center)
                         }
                     }
                 }
