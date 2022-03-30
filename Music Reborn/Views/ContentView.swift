@@ -12,7 +12,6 @@ import AVFAudio
 
 struct ContentView: View {
     @State private var term: String = ""
-    @FocusState private var isFocussed: Bool
     @State private var searchResults: Array<Result> = []
     @State private var showSpinner: Bool = false
     
@@ -24,19 +23,15 @@ struct ContentView: View {
                         "Search YouTube",
                         text: $term
                     )
-                    .textFieldStyle(.roundedBorder)
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .padding([.top, .leading, .trailing], 15.0)
-                    .focused($isFocussed)
-                    .foregroundColor(isFocussed ? .gray : .blue)
                     .onAppear(perform: {
                         try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
                         try? AVAudioSession.sharedInstance().setActive(false)
                     })
+                    .textFieldStyle(.roundedBorder)
+                    .cornerRadius(3)
                     .onSubmit {
                         showSpinner = true
-                        let path = "https://invidious.osi.kr/api/v1/search?q=\(term.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")&type=video"
+                        let path = "https://vid.puffyan.us/api/v1/search?q=\(term.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? "")&type=video"
                         AF.request(path).responseData { res in
                             switch res.result {
                             case .success(let data):
@@ -60,6 +55,10 @@ struct ContentView: View {
                             }
                         }
                     }
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
+                    .border(.secondary)
+                    .padding([.top, .leading, .trailing], 15.0)
 
                     if showSpinner {
                         ProgressView()
@@ -98,8 +97,8 @@ struct ContentView: View {
                                             .shadow(color: .black, radius: 2, x: 0, y: 0)
                                     }
                                 }
-                                .frame(height: UIScreen.main.bounds.height / 6 ,alignment:.center)
                             }
+                            .frame(height: UIScreen.main.bounds.height / 6 ,alignment:.center)
                         }
                     }
                 } else {
