@@ -22,11 +22,24 @@ class ViewModel: ObservableObject {
         timeObserverToken = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [self] time in
             let seconds: Double = CMTimeGetSeconds(time)
             current = Double(seconds)
-            max = Double((player.currentItem?.duration.seconds) ?? 0)
+            max = Double((player.currentItem?.duration.seconds) ?? 0) / 2
             if ((player.rate != 0) && (player.error == nil)) {
                 isPlaying = true
             } else {
                 isPlaying = false
+            }
+            if current >= max {
+                player.pause()
+                let time = CMTime(seconds: max, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+                // Update Slider UI based on time value
+                let rate = player.rate
+                // Temporarily stop while changing time
+                player.rate = 0
+                player.seek(to: time) { completed in
+                    if !completed { return }
+                    // Play again when the changes are complete
+                    self.player.rate = rate
+                }
             }
             objectWillChange.send()
         }
@@ -51,7 +64,7 @@ struct PlayerView: View {
                 .ignoresSafeArea()
                 .blur(radius: 30)
                 .frame(alignment:.center)
-
+                .blendMode(.darken)
             VStack {
                 Text(title)
                     .font(.title)
@@ -84,11 +97,13 @@ struct PlayerView: View {
                 if vm.max == 0 {
                     ProgressView()
                     .frame(width: UIScreen.main.bounds.width - 20)
+                    .shadow(color: .black, radius: 10, x: 0, y: 0)
                 } else {
                     ProgressView(value: vm.current, total: vm.max) {
                         Text("")
                     }
                     .frame(width: UIScreen.main.bounds.width - 20)
+                    .shadow(color: .black, radius: 10, x: 0, y: 0)
                 }
                 Spacer()
                 VStack {
@@ -115,6 +130,7 @@ struct PlayerView: View {
                                 .scaledToFit()
                                 .foregroundColor(.white)
                                 .frame(width: 50, alignment: .center)
+                                .shadow(color: .black, radius: 10, x: 0, y: 0)
                         }
                         Button { // play pause
                             switch vm.isPlaying {
@@ -133,6 +149,7 @@ struct PlayerView: View {
                                 .scaledToFit()
                                 .foregroundColor(.white)
                                 .frame(width: 75, alignment: .center)
+                                .shadow(color: .black, radius: 10, x: 0, y: 0)
                         }
                         .padding(.horizontal, UIScreen.main.bounds.width / 10)
                         .onAppear {
@@ -178,6 +195,7 @@ struct PlayerView: View {
                                 .scaledToFit()
                                 .foregroundColor(.white)
                                 .frame(width: 50, alignment: .center)
+                                .shadow(color: .black, radius: 10, x: 0, y: 0)
                         }
                     }
                 }
@@ -193,7 +211,7 @@ struct Player_Previews: PreviewProvider {
         PlayerView(
             thumb: URL(string: "https://vid.puffyan.us/vi/bYCUt4sPlKc/maxres.jpg")!,
             vidId: "bYCUt4sPlKc",
-            title: "Ki Jor Gariban Da egg egg egg egg egg egg egg egg egg",
+            title: "Ki Jor Gariban Da",
             author: "Josh Sidhu"
         )
     }
